@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<title>YNG Masquerade — Pick Your Nights</title>
+<style>
+  :root{
+    color-scheme:light;
+    --blue:#1D80C3; --green:#73BA40; --coral:#F05564;
+    --violet:#69439A; --amber:#E1A427;
+    --ink:#69439A; --muted:#6b7480; --line:#e4e8ee; --panel:#F5F7FA;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:#fff; color:#69439A;
+    font-family:"Segoe UI",Roboto,system-ui,-apple-system,Helvetica,Arial,sans-serif;
+    line-height:1.45; -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:640px;margin:0 auto;padding:0 16px 64px;}
+  .stripe{height:6px;display:flex;}
+  .stripe span{flex:1;}
+  .s1{background:var(--blue);}.s2{background:var(--green);}.s3{background:var(--coral);}
+  .s4{background:var(--amber);}.s5{background:var(--violet);}
+
+  header{text-align:center;padding:26px 0 12px;}
+  .eyebrow{font-size:12px;letter-spacing:.22em;color:var(--blue);font-weight:700;text-transform:uppercase;}
+  .wordmark{font-size:clamp(30px,9vw,46px);font-weight:800;letter-spacing:.02em;margin:6px 0 0;line-height:.95;}
+  .wordmark span{display:inline-block;}
+  .murder{font-size:clamp(20px,6.2vw,30px);font-weight:800;font-style:italic;color:var(--coral);
+    transform:rotate(-2deg);margin-top:2px;letter-spacing:.01em;}
+  .lede{color:var(--muted);font-size:14.5px;margin:14px auto 0;max-width:440px;}
+
+  h2{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);
+    margin:30px 0 12px;font-weight:800;display:flex;align-items:center;gap:8px;}
+  h2::before{content:"";width:14px;height:14px;border-radius:3px;background:var(--blue);}
+  h2.g::before{background:var(--green);} h2.c::before{background:var(--coral);}
+
+  /* name block */
+  .field{margin:4px 0 0;}
+  label{display:block;font-size:13px;font-weight:700;margin-bottom:6px;}
+  input[type=text]{width:100%;padding:13px 14px;font-size:16px;border:1.5px solid var(--line);
+    border-radius:12px;outline:none;font-family:inherit;color:#69439A;background:#fff;}
+  input[type=text]:focus{border-color:var(--blue);}
+  .plus{display:flex;align-items:center;gap:10px;margin-top:14px;font-size:14.5px;cursor:pointer;user-select:none;}
+  .plus input{width:20px;height:20px;accent-color:var(--violet);}
+
+  /* slot legend */
+  .slots{display:grid;grid-template-columns:1fr;gap:10px;}
+  .slot{border:1.5px solid var(--line);border-radius:14px;padding:13px 15px;display:flex;gap:13px;align-items:flex-start;}
+  .slot .dot{width:12px;height:12px;border-radius:50%;margin-top:4px;flex:none;}
+  .slot.early .dot{background:var(--amber);} .slot.mid .dot{background:var(--blue);} .slot.late .dot{background:var(--violet);}
+  .slot b{font-size:15px;} .slot .t{color:var(--muted);font-size:13.5px;margin-top:2px;}
+
+  /* grid */
+  .legend{display:flex;flex-wrap:wrap;gap:14px;margin:0 0 14px;font-size:13px;color:var(--muted);}
+  .legend i{display:inline-block;width:16px;height:16px;border-radius:5px;vertical-align:-3px;margin-right:6px;}
+  .li-y i{background:var(--green);} .li-m i{background:var(--amber);}
+  .li-n i{background:#fff;border:1.5px solid var(--line);}
+
+  .grid{display:grid;grid-template-columns:64px repeat(3,1fr);gap:7px;}
+  .ghead{font-size:11px;font-weight:800;letter-spacing:.04em;text-align:center;color:var(--ink);
+    padding:6px 2px;text-transform:uppercase;}
+  .ghead small{display:block;color:var(--muted);font-weight:600;letter-spacing:0;text-transform:none;font-size:10.5px;margin-top:2px;}
+  .corner{}
+  .day{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding-left:2px;}
+  .day .dow{font-weight:800;font-size:14px;}
+  .day .dt{font-size:11.5px;color:var(--muted);}
+  .day.wknd .dow{color:var(--coral);}
+  .cell{min-height:48px;border:1.5px solid var(--line);border-radius:11px;background:#fff;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:20px;font-weight:800;
+    transition:transform .06s ease, background .12s ease;color:#fff;}
+  .cell:active{transform:scale(.94);}
+  .cell.yes{background:var(--green);border-color:var(--green);}
+  .cell.maybe{background:var(--amber);border-color:var(--amber);}
+
+  .btn{display:block;width:100%;margin-top:22px;padding:16px;border:none;border-radius:14px;
+    background:var(--coral);color:#fff;font-size:16.5px;font-weight:800;cursor:pointer;font-family:inherit;
+    letter-spacing:.01em;}
+  .btn:active{filter:brightness(.94);}
+  .btn[disabled]{background:#c9ced6;cursor:not-allowed;}
+  .note{text-align:center;font-size:12.5px;color:var(--muted);margin-top:10px;}
+  .saved{text-align:center;font-size:14px;color:var(--green);font-weight:700;margin-top:12px;min-height:20px;}
+
+  /* results */
+  .results{margin-top:8px;}
+  .frontrunner{background:var(--panel);border-radius:14px;padding:16px;text-align:center;margin-bottom:18px;}
+  .frontrunner .small{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:700;}
+  .frontrunner .big{font-size:20px;font-weight:800;margin-top:5px;}
+  .frontrunner .sub{font-size:13px;color:var(--muted);margin-top:3px;}
+  .rcell{min-height:46px;border-radius:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    border:1.5px solid var(--line);font-size:13px;font-weight:800;color:var(--ink);background:#fff;position:relative;}
+  .rcell .mb{font-size:10.5px;font-weight:700;color:var(--amber);}
+  .rcell.top{outline:2.5px solid var(--coral);outline-offset:1px;}
+  .who{font-size:13.5px;color:var(--muted);margin-top:16px;}
+  .who b{color:var(--ink);}
+  .empty{color:var(--muted);font-size:14px;padding:18px;text-align:center;background:var(--panel);border-radius:14px;}
+  .reset{display:inline-block;margin-top:16px;font-size:13px;color:var(--blue);text-decoration:underline;cursor:pointer;background:none;border:none;font-family:inherit;}
+  .tabs{display:flex;gap:8px;margin:24px 0 16px;}
+  .tab{flex:1;padding:11px;border:1.5px solid var(--line);border-radius:11px;background:#fff;font-weight:800;
+    font-size:13.5px;cursor:pointer;font-family:inherit;color:var(--muted);}
+  .tab.active{border-color:var(--blue);color:var(--blue);background:#f1f7fc;}
+  .hide{display:none;}
+</style>
+</head>
+<body>
+<div class="stripe"><span class="s1"></span><span class="s2"></span><span class="s3"></span><span class="s4"></span><span class="s5"></span></div>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">YNG Hyderabad · You're Invited</div>
+    <div class="wordmark" id="wm"></div>
+    <div class="murder">Murder</div>
+    <p class="lede">Venice, 1755 — a masked ball with a body on the floor. Before we lock the date, tell us which nights you can come. Tap the slots that work.</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" id="tabForm">Add my availability</button>
+    <button class="tab" id="tabRes">See the tally</button>
+  </div>
+
+  <!-- FORM -->
+  <section id="formView">
+    <div class="field">
+      <label for="name">Your name</label>
+      <input type="text" id="name" placeholder="Your full name" autocomplete="name">
+      <label class="plus"><input type="checkbox" id="plusOne"> Bringing a +1</label>
+    </div>
+
+    <h2 class="g">The three start times</h2>
+    <div class="slots">
+      <div class="slot early"><span class="dot"></span><div><b>Early · 5:00 PM</b><div class="t">Hi-tea on arrival (4:30), game runs ~5:00–7:30, light bites to close.</div></div></div>
+      <div class="slot mid"><span class="dot"></span><div><b>Mid · 7:00 PM</b><div class="t">Cocktails & snacks on arrival, game ~7:00–9:30, dinner after.</div></div></div>
+      <div class="slot late"><span class="dot"></span><div><b>Late · 8:30 PM</b><div class="t">Dinner first (8:00), game ~8:30–11:00 into the night.</div></div></div>
+    </div>
+
+    <h2>Tap the nights you can make</h2>
+    <div class="legend">
+      <span class="li-y"><i></i>Can make it</span>
+      <span class="li-m"><i></i>If needed</span>
+      <span class="li-n"><i></i>Can't · tap to cycle</span>
+    </div>
+
+    <div class="grid" id="grid"></div>
+
+    <button class="btn" id="submit" disabled>Send my availability</button>
+    <div class="saved" id="saved"></div>
+    <p class="note" id="modeNote">Everyone who opens this link sees the same running tally.</p>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="resView" class="results hide">
+    <div id="resBody"></div>
+  </section>
+</div>
+
+<script>
+// ============================================================
+//  GOOGLE FORM HOOK-UP  — fill these 9 values, then host the file.
+//  Leave FORM_ACTION "" to keep the in-Claude tally instead.
+//  (How to get the IDs is in the instructions below the canvas.)
+// ============================================================
+const CONFIG = {
+  FORM_ACTION: "https://docs.google.com/forms/d/e/1FAIpQLSeViGwDRMcHrgCk4gbg6y6FxIYY_Czq1o1n2PN8z6zvOzJqWQ/formResponse",
+  ENTRY_NAME:  "entry.573210239",   // "Your name"
+  ENTRY_PLUS:  "entry.1411474173",  // "Bringing a +1?" (sends Yes/No)
+  ENTRY_DAYS:  [                     // Wed Jul1 → Tue Jul7
+    "entry.933065376",   // Wed Jul 1
+    "entry.1226762833",  // Thu Jul 2
+    "entry.406336582",   // Fri Jul 3
+    "entry.1637379787",  // Sat Jul 4
+    "entry.286617178",   // Sun Jul 5
+    "entry.1116067654",  // Mon Jul 6
+    "entry.2118325249"   // Tue Jul 7
+  ],
+  COLS:        ["Early 5 PM","Mid 7 PM","Late 8:30 PM"], // must match your grid columns exactly
+  RESULTS_URL: ""               // optional: published summary link for the tally tab
+};
+const USING_GOOGLE = !!CONFIG.FORM_ACTION;
+
+const SLOTS = [
+  {key:"early", label:"Early", time:"5 PM", food:"Hi-tea"},
+  {key:"mid",   label:"Mid",   time:"7 PM", food:"Snacks + dinner"},
+  {key:"late",  label:"Late",  time:"8:30", food:"Dinner first"}
+];
+const DAYS = [
+  {dow:"Wed", dt:"Jul 1", wknd:false},
+  {dow:"Thu", dt:"Jul 2", wknd:false},
+  {dow:"Fri", dt:"Jul 3", wknd:true},
+  {dow:"Sat", dt:"Jul 4", wknd:true},
+  {dow:"Sun", dt:"Jul 5", wknd:true},
+  {dow:"Mon", dt:"Jul 6 · 6-7 🤚🤚", wknd:false, gold:true},
+  {dow:"Tue", dt:"Jul 7", wknd:false}
+];
+const PALETTE = ["#1D80C3","#73BA40","#F05564","#E1A427","#69439A"];
+
+// multicolor wordmark
+(function(){
+  const wm = document.getElementById('wm');
+  "MASQUERADE".split("").forEach((ch,i)=>{
+    const s=document.createElement('span');
+    s.textContent=ch; s.style.color=PALETTE[i%PALETTE.length];
+    wm.appendChild(s);
+  });
+})();
+
+// grid state: state[day][slot] = 0 none, 1 yes, 2 maybe
+const state = DAYS.map(()=>SLOTS.map(()=>0));
+const ICON = {1:"✓",2:"~"};
+const CLS  = {0:"",1:"yes",2:"maybe"};
+
+const grid = document.getElementById('grid');
+function buildGrid(){
+  grid.innerHTML="";
+  grid.appendChild(div("corner"));
+  SLOTS.forEach(s=>{
+    const h=div("ghead"); h.innerHTML=`${s.label} ${s.time}<small>${s.food}</small>`;
+    grid.appendChild(h);
+  });
+  DAYS.forEach((d,di)=>{
+    const day=div("day"+(d.wknd?" wknd":""));
+    day.innerHTML=`<span class="dow"${d.gold?' style="color:var(--amber)"':''}>${d.dow}</span><span class="dt">${d.dt}</span>`;
+    grid.appendChild(day);
+    SLOTS.forEach((s,si)=>{
+      const c=div("cell");
+      c.dataset.d=di; c.dataset.s=si;
+      c.addEventListener('click',()=>{
+        state[di][si]=(state[di][si]+1)%3;
+        paint(c,state[di][si]);
+        checkReady();
+      });
+      grid.appendChild(c);
+    });
+  });
+}
+function paint(c,v){ c.className="cell "+CLS[v]; c.textContent=ICON[v]||""; }
+function div(cls){const e=document.createElement('div');e.className=cls;return e;}
+
+const nameEl=document.getElementById('name');
+const plusEl=document.getElementById('plusOne');
+const submit=document.getElementById('submit');
+const saved=document.getElementById('saved');
+
+function anyPicked(){ return state.some(r=>r.some(v=>v>0)); }
+function checkReady(){ submit.disabled = !(nameEl.value.trim() && anyPicked()); }
+nameEl.addEventListener('input',checkReady);
+
+function slug(n){return n.trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
+
+submit.addEventListener('click',async()=>{
+  const name=nameEl.value.trim();
+  if(!name||!anyPicked())return;
+  submit.disabled=true; saved.textContent="Sending…";
+
+  if(USING_GOOGLE){
+    try{
+      const body=new URLSearchParams();
+      body.append(CONFIG.ENTRY_NAME, name);
+      if(CONFIG.ENTRY_PLUS) body.append(CONFIG.ENTRY_PLUS, plusEl.checked?"Yes":"No");
+      state.forEach((row,di)=>{
+        const id=CONFIG.ENTRY_DAYS[di]; if(!id)return;
+        row.forEach((v,si)=>{ if(v>0) body.append(id, CONFIG.COLS[si]); }); // yes & "if needed" both = available
+      });
+      await fetch(CONFIG.FORM_ACTION,{method:"POST",mode:"no-cors",
+        headers:{"Content-Type":"application/x-www-form-urlencoded"}, body});
+      saved.textContent="Sent — thank you! Your reply is in the sheet.";
+    }catch(e){
+      saved.textContent="Couldn't reach the form. Check your connection and try again.";
+      submit.disabled=false;
+    }
+    return;
+  }
+
+  // fallback: in-Claude shared tally
+  try{
+    await window.storage.set('resp:'+slug(name), JSON.stringify({name, plusOne:plusEl.checked, grid:state, ts:Date.now()}), true);
+    saved.textContent="Locked in — thank you! Switch to the tally to see how it's shaping up.";
+  }catch(e){
+    saved.textContent="Couldn't save just now. Try again in a moment.";
+    submit.disabled=false;
+  }
+});
+
+// load existing response for this name to allow edits (in-Claude mode only)
+nameEl.addEventListener('blur', async()=>{
+  if(USING_GOOGLE || !window.storage) return;
+  const n=nameEl.value.trim(); if(!n)return;
+  try{
+    const r=await window.storage.get('resp:'+slug(n), true);
+    if(r&&r.value){
+      const rec=JSON.parse(r.value);
+      rec.grid.forEach((row,di)=>row.forEach((v,si)=>{state[di][si]=v;}));
+      plusEl.checked=!!rec.plusOne;
+      document.querySelectorAll('.cell').forEach(c=>paint(c,state[+c.dataset.d][+c.dataset.s]));
+      saved.textContent="Loaded your earlier answer — edit and resend to update.";
+      checkReady();
+    }
+  }catch(e){/* no prior response */}
+});
+
+// ---- results ----
+async function loadAll(){
+  if(!window.storage) return [];
+  let res; try{res=await window.storage.list('resp:',true);}catch(e){return[];}
+  const keys=(res&&res.keys)||[]; const out=[];
+  for(const k of keys){
+    try{const r=await window.storage.get(k,true); if(r&&r.value)out.push(JSON.parse(r.value));}catch(e){}
+  }
+  return out;
+}
+
+async function renderResults(){
+  const body=document.getElementById('resBody');
+  if(USING_GOOGLE){
+    body.innerHTML='<div class="frontrunner">'
+      +'<div class="small">Live results</div>'
+      +'<div class="big">Counted in your Google Sheet</div>'
+      +'<div class="sub">Every reply lands in the form\u2019s response sheet, where the grid totals up automatically.</div>'
+      +'</div>'
+      + (CONFIG.RESULTS_URL
+          ? '<button class="btn" onclick="window.open(\''+CONFIG.RESULTS_URL+'\',\'_blank\')">Open the results summary</button>'
+          : '<div class="empty">Tip: in your form, turn on <b>Responses \u2192 Summary \u2192 publish</b> and paste that link into RESULTS_URL to add a button here.</div>');
+    return;
+  }
+  const all=await loadAll();
+  if(!all.length){
+    body.innerHTML='<div class="empty">No replies yet. Be the first — add your availability, then check back.</div>';
+    return;
+  }
+  // tally
+  const yes=DAYS.map(()=>SLOTS.map(()=>0));
+  const maybe=DAYS.map(()=>SLOTS.map(()=>0));
+  let heads=0;
+  all.forEach(r=>{
+    heads += 1 + (r.plusOne?1:0);
+    r.grid.forEach((row,di)=>row.forEach((v,si)=>{ if(v===1)yes[di][si]++; else if(v===2)maybe[di][si]++; }));
+  });
+  // best slot by yes (maybe as half tie-break)
+  let best={score:-1,di:0,si:0};
+  DAYS.forEach((d,di)=>SLOTS.forEach((s,si)=>{
+    const sc=yes[di][si]+maybe[di][si]*0.5;
+    if(sc>best.score)best={score:sc,di,si};
+  }));
+  const maxYes=Math.max(1,...yes.flat());
+
+  const bd=DAYS[best.di], bs=SLOTS[best.si];
+  let html=`<div class="frontrunner">
+      <div class="small">Front-runner</div>
+      <div class="big">${bd.dow} ${bd.dt} · ${bs.label} ${bs.time}</div>
+      <div class="sub">${yes[best.di][best.si]} can make it${maybe[best.di][best.si]?` · ${maybe[best.di][best.si]} if needed`:""} — ${bs.food}</div>
+    </div>`;
+
+  // heatmap grid
+  html+=`<div class="grid"><div class="corner"></div>`;
+  SLOTS.forEach(s=>{html+=`<div class="ghead">${s.label} ${s.time}<small>${s.food}</small></div>`;});
+  DAYS.forEach((d,di)=>{
+    html+=`<div class="day${d.wknd?' wknd':''}"><span class="dow"${d.gold?' style="color:var(--amber)"':''}>${d.dow}</span><span class="dt">${d.dt}</span></div>`;
+    SLOTS.forEach((s,si)=>{
+      const y=yes[di][si], m=maybe[di][si];
+      const op=y?(0.18+0.82*(y/maxYes)).toFixed(2):0;
+      const top=(di===best.di&&si===best.si)?' top':'';
+      const bg=y?`background:rgba(115,186,64,${op});color:${op>0.5?'#fff':'#69439A'};border-color:transparent;`:'';
+      html+=`<div class="rcell${top}" style="${bg}">${y}${m?`<span class="mb" style="color:${op>0.5?'#fff':''}">+${m}?</span>`:''}</div>`;
+    });
+  });
+  html+=`</div>`;
+
+  const names=all.map(r=>r.name+(r.plusOne?" (+1)":"")).join(", ");
+  html+=`<p class="who"><b>${all.length}</b> ${all.length===1?'reply':'replies'} · <b>${heads}</b> heads so far<br>${names}</p>`;
+  html+=`<button class="reset" id="clearAll">Clear all replies (host only)</button>`;
+  body.innerHTML=html;
+
+  document.getElementById('clearAll').addEventListener('click',async()=>{
+    if(!confirm("Delete everyone's replies? This can't be undone."))return;
+    try{
+      const res=await window.storage.list('resp:',true);
+      for(const k of (res.keys||[])) await window.storage.delete(k,true);
+      renderResults();
+    }catch(e){}
+  });
+}
+
+// tabs
+const tabForm=document.getElementById('tabForm'), tabRes=document.getElementById('tabRes');
+const formView=document.getElementById('formView'), resView=document.getElementById('resView');
+tabForm.addEventListener('click',()=>{
+  tabForm.classList.add('active');tabRes.classList.remove('active');
+  formView.classList.remove('hide');resView.classList.add('hide');
+});
+tabRes.addEventListener('click',()=>{
+  tabRes.classList.add('active');tabForm.classList.remove('active');
+  resView.classList.remove('hide');formView.classList.add('hide');
+  renderResults();
+});
+
+buildGrid();
+if(USING_GOOGLE){
+  document.getElementById('modeNote').textContent="Your reply goes straight to the organisers\u2019 sheet.";
+}
+</script>
+</body>
+</html>
