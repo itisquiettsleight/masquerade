@@ -28,24 +28,25 @@
   input[type=text]{width:100%;padding:13px 14px;font-size:16px;border:1.5px solid var(--line);border-radius:12px;outline:none;font-family:inherit;color:#69439A;background:#fff;}
   input[type=text]:focus{border-color:var(--blue);}
   /* character cards */
-  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;align-items:start;}
   .card{position:relative;border:1.5px solid var(--line);border-radius:14px;padding:16px 12px;cursor:pointer;text-align:center;
     background:#fff;transition:transform .06s ease,border-color .12s ease,box-shadow .12s ease;}
   .card:active{transform:scale(.97);}
-  .card .mask{font-size:22px;line-height:1;}
+  .card .mask{font-size:30px;line-height:1;}
   .card .nm{font-size:14.5px;font-weight:800;color:var(--violet);margin-top:7px;}
   .card .pick{font-size:11px;color:var(--muted);margin-top:3px;}
-  .card.sel{border-color:var(--coral);box-shadow:0 0 0 2.5px var(--coral);}
-  .card.sel .pick{color:var(--coral);font-weight:700;}
   .card.taken{opacity:.5;cursor:not-allowed;background:var(--panel);}
   .card.taken .nm{text-decoration:line-through;color:var(--muted);}
   .card.taken .pick{color:var(--coral);font-weight:700;}
-  /* selected bio */
-  .intro{margin:16px 0 0;border:1.5px solid var(--line);border-left:5px solid var(--violet);border-radius:12px;padding:14px 16px;background:var(--panel);display:none;}
-  .intro.show{display:block;animation:fade .25s ease;}
+  /* selected card expands in place to a full-width detail tile */
+  .card.sel{grid-column:1/-1;text-align:left;cursor:default;border-color:var(--coral);box-shadow:0 0 0 2.5px var(--coral);
+    background:#fff;animation:fade .2s ease;}
   @keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
-  .intro .cname{font-size:18px;font-weight:800;color:var(--violet);}
-  .intro .cdesc{font-size:14px;color:#3f3550;margin-top:7px;line-height:1.5;}
+  .card.sel .dh{display:flex;align-items:center;gap:11px;}
+  .card.sel .dh .mask{font-size:30px;}
+  .card.sel .dh .nm{font-size:18px;font-weight:800;color:var(--violet);margin:0;}
+  .card.sel .dh .pick{margin:0 0 0 auto;font-size:11px;color:var(--coral);font-weight:800;text-transform:uppercase;letter-spacing:.04em;}
+  .card.sel .cdesc{font-size:14px;color:#3f3550;margin-top:9px;line-height:1.5;}
   /* sticky confirm bar */
   .bar{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.97);border-top:1.5px solid var(--line);
     padding:12px 16px calc(12px + env(safe-area-inset-bottom));}
@@ -77,11 +78,6 @@
 
     <h2>Tap your character <span class="count" id="count"></span></h2>
     <div class="cards" id="cards"></div>
-
-    <div class="intro" id="intro">
-      <div class="cname" id="introName"></div>
-      <div class="cdesc" id="introDesc"></div>
-    </div>
     <div class="warn" id="warn"></div>
   </section>
 
@@ -112,102 +108,122 @@ const CHARACTERS = [
   {
     "name": "The Black Swan",
     "desc": "No one really knows much about where they came from. They just arrived one day. They’re apparently from a good family but no one is left, and their fortune was swept away, so they have no rank or title. However, they’re very charming and friendly, they’re charismatic and have all the qualities of the aristocracy; their heirs and graces and they’re very popular at the parties. They have no scandals, and their reputation is immaculate. They’ve worked hard to keep their pristine reputation so when they finally secure a wealthy partner, there’s nothing to hold against them, however money is what drives them, they don’t care who they marry as long as they’re rich.",
-    "pdf": "The_Black_Swan_web.pdf"
+    "pdf": "The_Black_Swan_web.pdf",
+    "icon": "🦢"
   },
   {
     "name": "The Bluebird",
     "desc": "Female, The General’s daughter and middle child. She’s been raised to care only about improving her family’s social standing. She enjoys turning her “pets” – women from lesser-known families – into social queens, as long as they don’t ever outshine her. She’s beautiful and quite an eligible young woman but has yet to settle down with anyone. People think it’s because she’s proud and too picky, but actually, she’s just more cautious. She fell for a man once who nearly ruined her and her family’s reputation, so now her guard is always up.",
-    "pdf": "The_Bluebird_web.pdf"
+    "pdf": "The_Bluebird_web.pdf",
+    "icon": "🐦"
   },
   {
     "name": "The Cat",
     "desc": "Female, recently widowed, she was the 2nd wife of a reasonably wealthy gentleman who unfortunately had a son from a previous marriage who inherited the family estate and most of the fortune – leaving her and her children with no home and a seriously reduced income. They’ve temporarily moved in with her older sibling who married quite well and has quite a good living and a large estate; however, she doesn’t want to live on their charity and so is desperate to marry her children off to wealthy people and make sure they’re settled.",
-    "pdf": "The_Cat_web.pdf"
+    "pdf": "The_Cat_web.pdf",
+    "icon": "🐱"
   },
   {
     "name": "The Countess",
     "desc": "Female, Party host. Every year, she hosts a masquerade ball for all her rich society friends. She’s a wealthy widow; her husband was the Governor of Venice for 20 years until his death last year. She’s the social queen with the power to make or break your reputation. She has a say on everything including what’s fashionable to wear, what foods to serve guests and who you should marry. No one in Venice can do anything without her permission and social ruin usually awaits anyone who challenges her authority.",
-    "pdf": "The_Countess_web.pdf"
+    "pdf": "The_Countess_web.pdf",
+    "icon": "👑"
   },
   {
     "name": "The Dog",
     "desc": "Took a job in Venice working odd jobs for the aristocracy. They’re polite, respectable, charming and reasonably good looking and because they’re a poor person but have the grace of the gentry, they’re accepted by the gentry but also ignored by them. No one pays any attention to them and they know lots of juicy gossip and secrets. Masquerade balls are a great opportunity for them to disguise themselves and mingle with the rich folk. They want to find information about their father who they know lives in Venice and is often at these parties.",
-    "pdf": "The_Dog_web.pdf"
+    "pdf": "The_Dog_web.pdf",
+    "icon": "🐶"
   },
   {
     "name": "The Dove",
     "desc": "Female, The Dragon’s young sister, she’s only 18 and has quite a fortune of her own that was left to her by her mother. She’s only recently started appearing in society and is still very naïve about the ways of the world. She’s sweet and friendly, well-mannered and pretty and is the target for many young men. However, her brother is very protective of her; it’s difficult for anyone to get close to her and he scares off any potential suitors that he feels aren’t good enough.",
-    "pdf": "The_Dove_web.pdf"
+    "pdf": "The_Dove_web.pdf",
+    "icon": "🕊️"
   },
   {
     "name": "The Dragon",
     "desc": "Male. The most eligible bachelor in Venice. He’s the nephew of The Countess (on his mother’s side) and has a substantial fortune and a large estate in the Italian Country as well as a home in Venice. He’s very good looking, but very proud and very judgmental. There are very few women he would consider worthy of his time and his attitude. He has put a lot of people off; only the most desperate Socialites still bother with him, but he hates desperate women just as much as he hates poor women.",
-    "pdf": "The_Dragon_web.pdf"
+    "pdf": "The_Dragon_web.pdf",
+    "icon": "🐉"
   },
   {
     "name": "The Fox",
     "desc": "Male, A young man from a respectable family, but not gentry. He grew up as a farmer’s son; his family had very little money of their own and he worked really hard and eventually made his fortune. He owns multiple ships and shops and even a small estate. He’s now equally as wealthy as many young men here, but is still not regarded an equal because he earned his money, and didn’t inherit it.",
-    "pdf": "The_Fox_web.pdf"
+    "pdf": "The_Fox_web.pdf",
+    "icon": "🦊"
   },
   {
     "name": "The Hare",
     "desc": "A sensible and respectable person of good family and good fortune. They’re looking after their sister and her family who have recently lost their fortune. They’re friendly, talkative and love a good party; they’re jolly and drink quite a bit. Their parties are often lavish as they’re constantly in competition with The General’s family. They believe that everyone deserves a chance at a good life, do a lot of work for charity and for the poor. This created tension and skirmishes have often happened between the rival families.",
-    "pdf": "The_Hare_web.pdf"
+    "pdf": "The_Hare_web.pdf",
+    "icon": "🐰"
   },
   {
     "name": "The Lion",
     "desc": "Male, one of the most powerful men in Venice and a good friend of The Countess’ late husband, assisting him while he was Governor. Now retired, his primary goal is to make sure the class system stays in place and the rich and the poor do not mix. He’s the chief campaigner against the lower classes attending the Masquerade balls, keeping them exclusive to the rich and influential. He believes that the circumstances of one’s birth are the only things that matters. He’s in deep competition with The Hare’s family and there’s a lot of rivalry going on there that has resulted in a few skirmishes in the past.",
-    "pdf": "The_Lion_web.pdf"
+    "pdf": "The_Lion_web.pdf",
+    "icon": "🦁"
   },
   {
     "name": "The Mouse",
     "desc": "The only child of The General’s brother. The Mouse’s father went against his family’s wishes and married a poor woman of no title and no fortune. In his anger, his father cut him off. The Mouse’s father wasted the family wealth and lost it all to gambling; was killed in a duel by a disgruntled nobleman. Their mother died shortly after their father and having no other relations left, they approached The General, their uncle, for his mercy and support. The General decided to take them under their wing, give them a proper education and hoped they could make a life for themselves. They’re under very strict instructions and are terrified of doing anything wrong in case they’re abandoned and so keep very quiet, do everything they’re told in order to keep in The General’s good graces.",
-    "pdf": "The_Mouse_web.pdf"
+    "pdf": "The_Mouse_web.pdf",
+    "icon": "🐭"
   },
   {
     "name": "The Phoenix",
     "desc": "Female, the daughter of a merchant. Her family are respectable and comfortable, but they are not titled or wealthy. She was in love with The Colonel, the two of them were engaged and had a secret wedding, hoping to make it official and legal but his father had other plans. He sent her away and paid her enough money to keep her silent and not reach out to The Colonel. What she didn’t realize at the time was she was pregnant with his child. Now, The Colonel is no longer restricted by his father’s rules; she’s come back to Venice looking for him.",
-    "pdf": "The_Phoenix_web.pdf"
+    "pdf": "The_Phoenix_web.pdf",
+    "icon": "🔥"
   },
   {
     "name": "The Shark",
     "desc": "Male, the youngest of The General’s three children. Unlike his older siblings, he doesn’t care so much about society and fortune. As the youngest son, he’s not set to inherit and would much prefer a quiet life. He wanted to be a clergyman, but that wasn’t distinguished enough for his father, so he went into law instead. His family pays for his education and he’s expected to marry well to maintain the family honour and social standing, but he dislikes the corruption of the Venetian court and tries to avoid it.",
-    "pdf": "The_Shark_web.pdf"
+    "pdf": "The_Shark_web.pdf",
+    "icon": "🦈"
   },
   {
     "name": "The Sparrow",
     "desc": "Female, the Countess’ distant relation, the stepdaughter of her brother through their marriage to a 2nd spouse or something, no one quite knows. When her parents fell on hard times and were unable to take care of her, she was taken in by the Countess. She’s mostly there as a companion; she reads to her, runs errands, goes visiting; everything the Countess wants her to do or should be doing herself ,but doesn’t want to is fobbed off on her. She’s quiet and plain and at 28, she’s nearly a spinster. There’s very little hope she will marry well and, at this point, she’ll happily take anyone that offers but no one has.",
-    "pdf": "The_Sparrow_web.pdf"
+    "pdf": "The_Sparrow_web.pdf",
+    "icon": "🐤"
   },
   {
     "name": "The Stag",
     "desc": "Male, quite a wealthy man, owns a small estate on the Italian countryside. He’s not aristocracy, but worked under The General and became good friends with him during the wars. He’s polite and everybody likes him, but he’s quiet and reclusive. He was quite handsome in his younger days. Even now in his 40s, he’s still considered a handsome man, but no one seems to get his attention. He was in love many years ago with a woman, but she had no rank or fortune and his father forbid the marriage and sent her away. He tried to find her when he was no longer under his father’s control, but was unable to locate her.",
-    "pdf": "The_Stag_web.pdf"
+    "pdf": "The_Stag_web.pdf",
+    "icon": "🦌"
   },
   {
     "name": "The Stallion",
     "desc": "Male, The General’s eldest son and heir. He will inherit everything upon his father’s death. He’s quite wild, enjoys partying and drinking, and spends a lot of time gambling. He is known through most of Venice as a bit of a womanizer. He’s charming, charismatic and can seduce anyone from nuns to duchesses... He’s only managed to escape jail due to his father’s influence and having someone else to blame.",
-    "pdf": "The_Stallion_web.pdf"
+    "pdf": "The_Stallion_web.pdf",
+    "icon": "🐎"
   },
   {
     "name": "The Turtle",
     "desc": "Unlike their relatives, they are quiet and reserved, they don’t really like attending wild parties and would much rather marry someone from a small town and settle somewhere quiet. They are constantly trying to curb their parents wild and drunk antics and get them to show a little moderation and are getting quite frustrated with it.",
-    "pdf": "The_Turtle_web.pdf"
+    "pdf": "The_Turtle_web.pdf",
+    "icon": "🐢"
   },
   {
     "name": "The Unicorn",
     "desc": "Female, The eldest daughter of The Widow and the only one out in society. She’s 18 years old and quite pretty, but she’s quite independent and free spirited, she loves poetry, art, music and will spend hours outside running through woodland and picking flowers. She’s often frowned upon for her more wild and ladylike behaviour; she doesn’t act proper and hates the stifling restrictions society puts on her.",
-    "pdf": "The_Unicorn_web.pdf"
+    "pdf": "The_Unicorn_web.pdf",
+    "icon": "🦄"
   },
   {
     "name": "The Weasel",
     "desc": "Male, claims to be a man of God but he’s not a good man, he’s very proud and arrogant. He desperately seeks approval from those in power and sucks up to them while talking down to everyone else. He’s greedy and wants to live comfortably and freely. His main goal now is to marry a wealthy woman who will then elevate his position within society. He’s a greasy weasel and a kiss ass to people like The Countess, but incredibly condescending and disrespectful to people further down the social ladder.",
-    "pdf": "The_Weasel_web.pdf"
+    "pdf": "The_Weasel_web.pdf",
+    "icon": "🦡"
   },
   {
     "name": "The Wolf",
     "desc": "Male, a handsome young man with no fortune, he’s a soldier in the Italian army, he’s very charming and flirty. He’s eloquent and can make anyone fall in love with him but he’s full of lies and deceit. He will often manipulate a situation to fit his own narrative and because he’s good at making himself appeal to all people, it seems quite likely that he will eventually win the heart of someone wealthy. He’s driven by money and a need for power.",
-    "pdf": "The_Wolf_web.pdf"
+    "pdf": "The_Wolf_web.pdf",
+    "icon": "🐺"
   }
 ];
 const PALETTE = ["#1D80C3","#73BA40","#F05564","#E1A427","#69439A"];
@@ -217,12 +233,11 @@ const byName={}; CHARACTERS.forEach(c=>byName[c.name]=c);
 const cardsEl=document.getElementById('cards');
 const nameEl=document.getElementById('name');
 const confirmBtn=document.getElementById('confirm');
-const intro=document.getElementById('intro');
-const introName=document.getElementById('introName');
-const introDesc=document.getElementById('introDesc');
 const warn=document.getElementById('warn');
 const countEl=document.getElementById('count');
 let selected=null, taken={};
+
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
 function render(){
   cardsEl.innerHTML="";
@@ -230,20 +245,20 @@ function render(){
   CHARACTERS.forEach(c=>{
     const isTaken=!!taken[c.name];
     if(!isTaken) free++;
+    const isSel = selected===c.name && !isTaken;
     const d=document.createElement('div');
-    d.className="card"+(isTaken?" taken":"")+(selected===c.name?" sel":"");
-    d.innerHTML='<div class="mask">🎭</div><div class="nm">'+c.name+'</div><div class="pick">'+(isTaken?'Taken':(selected===c.name?'✓ Selected':'Tap to choose'))+'</div>';
+    d.className="card"+(isTaken?" taken":"")+(isSel?" sel":"");
+    if(isSel){
+      d.innerHTML='<div class="dh"><span class="mask">'+c.icon+'</span><span class="nm">'+esc(c.name)+'</span><span class="pick">✓ Selected</span></div><div class="cdesc">'+esc(c.desc)+'</div>';
+    } else {
+      d.innerHTML='<div class="mask">'+c.icon+'</div><div class="nm">'+esc(c.name)+'</div><div class="pick">'+(isTaken?'Taken':'Tap to choose')+'</div>';
+    }
     if(!isTaken){ d.addEventListener('click',()=>select(c.name)); }
     cardsEl.appendChild(d);
   });
   countEl.textContent=free+" of "+CHARACTERS.length+" left";
 }
-function select(name){
-  selected=name; const c=byName[name];
-  introName.textContent=c.name; introDesc.textContent=c.desc; intro.classList.add('show');
-  render(); checkReady();
-  intro.scrollIntoView({behavior:'smooth',block:'nearest'});
-}
+function select(name){ selected=name; render(); checkReady(); }
 function checkReady(){ confirmBtn.disabled=!(nameEl.value.trim() && selected && !taken[selected]); }
 nameEl.addEventListener('input',checkReady);
 
@@ -256,7 +271,7 @@ async function loadTaken(){
     return t;
   }catch(e){return {};}
 }
-(async()=>{ taken=await loadTaken(); if(selected&&taken[selected]){selected=null;intro.classList.remove('show');} render(); checkReady(); })();
+(async()=>{ taken=await loadTaken(); if(selected&&taken[selected]){selected=null;} render(); checkReady(); })();
 
 function pdfUrl(c){return CONFIG.PDF_BASE+encodeURIComponent(c.pdf);}
 function triggerDownload(c){const a=document.getElementById('hiddenDl');a.href=pdfUrl(c);a.download=c.pdf;a.click();}
@@ -268,7 +283,7 @@ confirmBtn.addEventListener('click',async()=>{
   if(!confirm("Confirm "+character+"? Your character is final once you submit.")) return;
   confirmBtn.disabled=true; confirmBtn.textContent="Locking it in…"; warn.textContent="";
   taken=await loadTaken();
-  if(taken[character]){ warn.textContent="Sorry — "+character+" was just claimed. Please pick another."; selected=null; intro.classList.remove('show'); render(); confirmBtn.textContent="Confirm my character"; checkReady(); return; }
+  if(taken[character]){ warn.textContent="Sorry — "+character+" was just claimed. Please pick another."; selected=null; render(); confirmBtn.textContent="Confirm my character"; checkReady(); return; }
   try{
     const body=new URLSearchParams();
     body.append(CONFIG.ENTRY_NAME,name);
