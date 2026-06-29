@@ -6,60 +6,59 @@
 <meta name="color-scheme" content="light only">
 <title>YNG Masquerade — Claim Your Character</title>
 <style>
-  :root{
-    color-scheme:light;
-    --blue:#1D80C3; --green:#73BA40; --coral:#F05564;
-    --violet:#69439A; --amber:#E1A427;
-    --ink:#69439A; --muted:#6b7480; --line:#e4e8ee; --panel:#F5F7FA;
-  }
+  :root{ color-scheme:light;
+    --blue:#1D80C3; --green:#73BA40; --coral:#F05564; --violet:#69439A; --amber:#E1A427;
+    --ink:#69439A; --muted:#6b7480; --line:#e4e8ee; --panel:#F5F7FA; }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
-  body{background:#fff;color:#69439A;
-    font-family:"Segoe UI",Roboto,system-ui,-apple-system,Helvetica,Arial,sans-serif;
-    line-height:1.45;-webkit-text-size-adjust:100%;}
-  .wrap{max-width:640px;margin:0 auto;padding:0 16px 64px;}
-  .stripe{height:6px;display:flex;}
-  .stripe span{flex:1;}
-  .s1{background:var(--blue);}.s2{background:var(--green);}.s3{background:var(--coral);}
-  .s4{background:var(--amber);}.s5{background:var(--violet);}
-  header{text-align:center;padding:16px 0 8px;}
+  body{background:#fff;color:#69439A;font-family:"Segoe UI",Roboto,system-ui,-apple-system,Helvetica,Arial,sans-serif;line-height:1.45;-webkit-text-size-adjust:100%;}
+  .wrap{max-width:680px;margin:0 auto;padding:0 16px 110px;}
+  .stripe{height:6px;display:flex;} .stripe span{flex:1;}
+  .s1{background:var(--blue);}.s2{background:var(--green);}.s3{background:var(--coral);}.s4{background:var(--amber);}.s5{background:var(--violet);}
+  header{text-align:center;padding:16px 0 6px;}
   .eyebrow{font-size:12px;letter-spacing:.22em;color:var(--blue);font-weight:700;text-transform:uppercase;}
-  .wordmark{font-size:clamp(30px,9vw,46px);font-weight:800;letter-spacing:.02em;margin:6px 0 0;line-height:.95;}
+  .wordmark{font-size:clamp(28px,8.5vw,44px);font-weight:800;letter-spacing:.02em;margin:6px 0 0;line-height:.95;}
   .wordmark span{display:inline-block;}
-  .murder{font-size:clamp(20px,6.2vw,30px);font-weight:800;font-style:italic;color:var(--coral);
-    transform:rotate(-2deg);margin-top:2px;}
-  .lede{color:var(--muted);font-size:14.5px;margin:12px auto 0;max-width:460px;}
-  h2{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);
-    margin:22px 0 10px;font-weight:800;display:flex;align-items:center;gap:8px;}
+  .murder{font-size:clamp(18px,6vw,28px);font-weight:800;font-style:italic;color:var(--coral);transform:rotate(-2deg);margin-top:2px;}
+  .lede{color:var(--muted);font-size:14px;margin:10px auto 0;max-width:470px;}
+  h2{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);margin:20px 0 10px;font-weight:800;display:flex;align-items:center;gap:8px;}
   h2::before{content:"";width:14px;height:14px;border-radius:3px;background:var(--violet);}
+  h2 .count{margin-left:auto;font-size:11px;letter-spacing:.04em;color:var(--muted);font-weight:700;text-transform:none;}
   label{display:block;font-size:13px;font-weight:700;margin-bottom:6px;}
-  input[type=text],select{width:100%;padding:13px 14px;font-size:16px;border:1.5px solid var(--line);
-    border-radius:12px;outline:none;font-family:inherit;color:#69439A;background:#fff;}
-  input[type=text]:focus,select:focus{border-color:var(--blue);}
-  .field{margin:0 0 14px;}
-  select{appearance:none;-webkit-appearance:none;
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2369439A' stroke-width='2.5'><path d='M6 9l6 6 6-6'/></svg>");
-    background-repeat:no-repeat;background-position:right 14px center;padding-right:40px;}
-  select:disabled{opacity:.6;}
-  /* intro reveal */
-  .intro{margin:14px 0 0;border:1.5px solid var(--line);border-left:5px solid var(--violet);
-    border-radius:12px;padding:14px 16px;background:var(--panel);display:none;}
+  input[type=text]{width:100%;padding:13px 14px;font-size:16px;border:1.5px solid var(--line);border-radius:12px;outline:none;font-family:inherit;color:#69439A;background:#fff;}
+  input[type=text]:focus{border-color:var(--blue);}
+  /* character cards */
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
+  .card{position:relative;border:1.5px solid var(--line);border-radius:14px;padding:16px 12px;cursor:pointer;text-align:center;
+    background:#fff;transition:transform .06s ease,border-color .12s ease,box-shadow .12s ease;}
+  .card:active{transform:scale(.97);}
+  .card .mask{font-size:22px;line-height:1;}
+  .card .nm{font-size:14.5px;font-weight:800;color:var(--violet);margin-top:7px;}
+  .card .pick{font-size:11px;color:var(--muted);margin-top:3px;}
+  .card.sel{border-color:var(--coral);box-shadow:0 0 0 2.5px var(--coral);}
+  .card.sel .pick{color:var(--coral);font-weight:700;}
+  .card.taken{opacity:.5;cursor:not-allowed;background:var(--panel);}
+  .card.taken .nm{text-decoration:line-through;color:var(--muted);}
+  .card.taken .pick{color:var(--coral);font-weight:700;}
+  /* selected bio */
+  .intro{margin:16px 0 0;border:1.5px solid var(--line);border-left:5px solid var(--violet);border-radius:12px;padding:14px 16px;background:var(--panel);display:none;}
   .intro.show{display:block;animation:fade .25s ease;}
   @keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
-  .intro .cname{font-size:17px;font-weight:800;color:var(--violet);}
+  .intro .cname{font-size:18px;font-weight:800;color:var(--violet);}
   .intro .cdesc{font-size:14px;color:#3f3550;margin-top:7px;line-height:1.5;}
-  .btn{display:block;width:100%;margin-top:20px;padding:16px;border:none;border-radius:14px;
-    background:var(--coral);color:#fff;font-size:16.5px;font-weight:800;cursor:pointer;font-family:inherit;}
-  .btn:active{filter:brightness(.94);}
-  .btn[disabled]{background:#c9ced6;cursor:not-allowed;}
+  /* sticky confirm bar */
+  .bar{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.97);border-top:1.5px solid var(--line);
+    padding:12px 16px calc(12px + env(safe-area-inset-bottom));}
+  .bar .inner{max-width:680px;margin:0 auto;}
+  .btn{display:block;width:100%;padding:15px;border:none;border-radius:14px;background:var(--coral);color:#fff;font-size:16.5px;font-weight:800;cursor:pointer;font-family:inherit;}
+  .btn:active{filter:brightness(.94);} .btn[disabled]{background:#c9ced6;cursor:not-allowed;}
   .btn.secondary{background:var(--violet);}
-  .note{text-align:center;font-size:12.5px;color:var(--muted);margin-top:10px;}
-  .saved{text-align:center;font-size:14.5px;font-weight:700;margin-top:14px;min-height:20px;color:var(--green);}
-  .done{display:none;text-align:center;background:var(--panel);border-radius:14px;padding:22px 18px;margin-top:6px;}
+  .barnote{text-align:center;font-size:12px;color:var(--muted);margin-top:7px;}
+  .warn{font-size:12.5px;color:var(--coral);text-align:center;margin-top:7px;min-height:15px;}
+  .done{display:none;text-align:center;background:var(--panel);border-radius:14px;padding:24px 18px;margin-top:18px;}
   .done.show{display:block;}
-  .done .big{font-size:20px;font-weight:800;color:var(--violet);}
+  .done .big{font-size:21px;font-weight:800;color:var(--violet);}
   .done .sub{font-size:14px;color:var(--muted);margin:8px 0 16px;}
-  .warn{font-size:12.5px;color:var(--coral);text-align:center;margin-top:8px;min-height:16px;}
 </style>
 </head>
 <body>
@@ -73,32 +72,17 @@
   </header>
 
   <section id="formView">
-    <h2>Your details</h2>
-    <div class="field">
-      <label for="name">Your name</label>
-      <input type="text" id="name" placeholder="Your full name" autocomplete="name">
-    </div>
-    <div class="field">
-      <label for="contact">Contact (phone or email)</label>
-      <input type="text" id="contact" placeholder="So the host can reach you" autocomplete="email">
-    </div>
+    <h2>Your name</h2>
+    <input type="text" id="name" placeholder="Your full name" autocomplete="name">
 
-    <h2>Pick your character</h2>
-    <div class="field">
-      <select id="charSelect">
-        <option value="">Choose a character…</option>
-      </select>
-    </div>
+    <h2>Tap your character <span class="count" id="count"></span></h2>
+    <div class="cards" id="cards"></div>
 
     <div class="intro" id="intro">
       <div class="cname" id="introName"></div>
       <div class="cdesc" id="introDesc"></div>
     </div>
-
-    <button class="btn" id="confirm" disabled>Confirm my character</button>
     <div class="warn" id="warn"></div>
-    <p class="note" id="modeNote">One mask per guest. Your choice is final once you confirm.</p>
-    <div class="saved" id="saved"></div>
   </section>
 
   <section class="done" id="done">
@@ -108,16 +92,21 @@
   </section>
 </div>
 
+<div class="bar" id="bar">
+  <div class="inner">
+    <button class="btn" id="confirm" disabled>Confirm my character</button>
+    <div class="barnote" id="modeNote">One mask per guest. Your choice is final once you confirm.</div>
+  </div>
+</div>
+
 <a id="hiddenDl" style="display:none"></a>
 <script>
-// ====== CONFIG ======
 const CONFIG = {
   FORM_ACTION: "https://docs.google.com/forms/d/e/1FAIpQLSfeh2JOvzswATLmCdwUeF2myJXlu91Sv5wcreQgbsmXwRo78Q/formResponse",
-  ENTRY_NAME:    "entry.90531258",
-  ENTRY_CONTACT: "entry.2002307644",
-  ENTRY_CHAR:    "entry.1124421743",
-  PDF_BASE: "pdfs/",        // folder (relative) holding the character PDFs
-  CSV_URL: ""               // published CSV of the responses' character column -> enables hide-taken
+  ENTRY_NAME: "entry.90531258",
+  ENTRY_CHAR: "entry.1124421743",
+  PDF_BASE: "pdfs/",
+  CSV_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRT7As7JSK4fkTKyD5KjKQGYc0sTWyxzsJ-MZvAhDwBBRPf_SILrDvi4nmmRYGiuL0p8JEFH-q_WLoK/pub?gid=822288874&single=true&output=csv"
 };
 const CHARACTERS = [
   {
@@ -222,114 +211,79 @@ const CHARACTERS = [
   }
 ];
 const PALETTE = ["#1D80C3","#73BA40","#F05564","#E1A427","#69439A"];
+(function(){const wm=document.getElementById('wm');"MASQUERADE".split("").forEach((ch,i)=>{const s=document.createElement('span');s.textContent=ch;s.style.color=PALETTE[i%PALETTE.length];wm.appendChild(s);});})();
 
-// multicolor wordmark
-(function(){
-  const wm=document.getElementById('wm');
-  "MASQUERADE".split("").forEach((ch,i)=>{const s=document.createElement('span');s.textContent=ch;s.style.color=PALETTE[i%PALETTE.length];wm.appendChild(s);});
-})();
-
-const sel=document.getElementById('charSelect');
+const byName={}; CHARACTERS.forEach(c=>byName[c.name]=c);
+const cardsEl=document.getElementById('cards');
 const nameEl=document.getElementById('name');
-const contactEl=document.getElementById('contact');
 const confirmBtn=document.getElementById('confirm');
 const intro=document.getElementById('intro');
 const introName=document.getElementById('introName');
 const introDesc=document.getElementById('introDesc');
-const saved=document.getElementById('saved');
 const warn=document.getElementById('warn');
-const byName={};
-CHARACTERS.forEach(c=>byName[c.name]=c);
+const countEl=document.getElementById('count');
+let selected=null, taken={};
 
-// build dropdown
-function buildOptions(taken){
-  taken=taken||{};
-  sel.querySelectorAll('option:not([value=""])').forEach(o=>o.remove());
+function render(){
+  cardsEl.innerHTML="";
+  let free=0;
   CHARACTERS.forEach(c=>{
-    const o=document.createElement('option');
-    o.value=c.name;
-    if(taken[c.name]){o.textContent=c.name+" — taken";o.disabled=true;}
-    else{o.textContent=c.name;}
-    sel.appendChild(o);
+    const isTaken=!!taken[c.name];
+    if(!isTaken) free++;
+    const d=document.createElement('div');
+    d.className="card"+(isTaken?" taken":"")+(selected===c.name?" sel":"");
+    d.innerHTML='<div class="mask">🎭</div><div class="nm">'+c.name+'</div><div class="pick">'+(isTaken?'Taken':(selected===c.name?'✓ Selected':'Tap to choose'))+'</div>';
+    if(!isTaken){ d.addEventListener('click',()=>select(c.name)); }
+    cardsEl.appendChild(d);
   });
+  countEl.textContent=free+" of "+CHARACTERS.length+" left";
 }
-buildOptions();
-
-sel.addEventListener('change',()=>{
-  const c=byName[sel.value];
-  if(c){introName.textContent=c.name;introDesc.textContent=c.desc;intro.classList.add('show');}
-  else{intro.classList.remove('show');}
-  checkReady();
-});
-function checkReady(){confirmBtn.disabled=!(nameEl.value.trim()&&contactEl.value.trim()&&sel.value);}
+function select(name){
+  selected=name; const c=byName[name];
+  introName.textContent=c.name; introDesc.textContent=c.desc; intro.classList.add('show');
+  render(); checkReady();
+  intro.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function checkReady(){ confirmBtn.disabled=!(nameEl.value.trim() && selected && !taken[selected]); }
 nameEl.addEventListener('input',checkReady);
-contactEl.addEventListener('input',checkReady);
 
-// ---- hide-taken (best effort) ----
 async function loadTaken(){
   if(!CONFIG.CSV_URL) return {};
   try{
     const r=await fetch(CONFIG.CSV_URL,{cache:"no-store"});
-    const text=await r.text();
-    const taken={};
-    text.split(/\r?\n/).forEach(line=>{
-      // match any known character name appearing in the row
-      CHARACTERS.forEach(c=>{ if(line.indexOf(c.name)!==-1) taken[c.name]=true; });
-    });
-    return taken;
+    const text=await r.text(); const t={};
+    text.split(/\r?\n/).forEach(line=>{CHARACTERS.forEach(c=>{if(line.indexOf(c.name)!==-1)t[c.name]=true;});});
+    return t;
   }catch(e){return {};}
 }
-(async()=>{
-  const taken=await loadTaken();
-  if(Object.keys(taken).length){
-    const cur=sel.value;
-    buildOptions(taken);
-    if(taken[cur]){ sel.value=""; intro.classList.remove('show'); }
-    else { sel.value=cur; }
-    checkReady();
-  }
-})();
+(async()=>{ taken=await loadTaken(); if(selected&&taken[selected]){selected=null;intro.classList.remove('show');} render(); checkReady(); })();
 
 function pdfUrl(c){return CONFIG.PDF_BASE+encodeURIComponent(c.pdf);}
-function triggerDownload(c){
-  const a=document.getElementById('hiddenDl');
-  a.href=pdfUrl(c); a.download=c.pdf; a.click();
-}
+function triggerDownload(c){const a=document.getElementById('hiddenDl');a.href=pdfUrl(c);a.download=c.pdf;a.click();}
 
 confirmBtn.addEventListener('click',async()=>{
-  const name=nameEl.value.trim(), contact=contactEl.value.trim(), character=sel.value;
-  if(!name||!contact||!character) return;
+  const name=nameEl.value.trim(); const character=selected;
+  if(!name||!character) return;
   const c=byName[character];
   if(!confirm("Confirm "+character+"? Your character is final once you submit.")) return;
-  confirmBtn.disabled=true; saved.textContent="Locking it in…"; warn.textContent="";
-
-  // last-second taken re-check
-  const taken=await loadTaken();
-  if(taken[character]){
-    warn.textContent="Sorry — "+character+" was just claimed by someone else. Please pick another.";
-    saved.textContent=""; buildOptions(taken); sel.value=""; intro.classList.remove('show');
-    confirmBtn.disabled=false; checkReady(); return;
-  }
-
+  confirmBtn.disabled=true; confirmBtn.textContent="Locking it in…"; warn.textContent="";
+  taken=await loadTaken();
+  if(taken[character]){ warn.textContent="Sorry — "+character+" was just claimed. Please pick another."; selected=null; intro.classList.remove('show'); render(); confirmBtn.textContent="Confirm my character"; checkReady(); return; }
   try{
     const body=new URLSearchParams();
     body.append(CONFIG.ENTRY_NAME,name);
-    body.append(CONFIG.ENTRY_CONTACT,contact);
     body.append(CONFIG.ENTRY_CHAR,character);
-    await fetch(CONFIG.FORM_ACTION,{method:"POST",mode:"no-cors",
-      headers:{"Content-Type":"application/x-www-form-urlencoded"},body});
-    // success UI
+    await fetch(CONFIG.FORM_ACTION,{method:"POST",mode:"no-cors",headers:{"Content-Type":"application/x-www-form-urlencoded"},body});
     document.getElementById('formView').style.display='none';
-    const done=document.getElementById('done');
+    document.getElementById('bar').style.display='none';
     document.getElementById('doneBig').textContent="You are "+character+".";
-    done.classList.add('show');
+    document.getElementById('done').classList.add('show');
     document.getElementById('dlBtn').onclick=()=>triggerDownload(c);
     setTimeout(()=>triggerDownload(c),400);
-  }catch(e){
-    saved.textContent=""; warn.textContent="Couldn't reach the form. Check your connection and try again.";
-    confirmBtn.disabled=false;
-  }
+    window.scrollTo({top:0,behavior:'smooth'});
+  }catch(e){ warn.textContent="Couldn't reach the form. Check your connection and try again."; confirmBtn.disabled=false; confirmBtn.textContent="Confirm my character"; }
 });
+render();
 </script>
 </body>
 </html>
