@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<title>YNG Masquerade — Claim Your Character</title>
+<style>
+  :root{
+    color-scheme:light;
+    --blue:#1D80C3; --green:#73BA40; --coral:#F05564;
+    --violet:#69439A; --amber:#E1A427;
+    --ink:#69439A; --muted:#6b7480; --line:#e4e8ee; --panel:#F5F7FA;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:#fff;color:#69439A;
+    font-family:"Segoe UI",Roboto,system-ui,-apple-system,Helvetica,Arial,sans-serif;
+    line-height:1.45;-webkit-text-size-adjust:100%;}
+  .wrap{max-width:640px;margin:0 auto;padding:0 16px 64px;}
+  .stripe{height:6px;display:flex;}
+  .stripe span{flex:1;}
+  .s1{background:var(--blue);}.s2{background:var(--green);}.s3{background:var(--coral);}
+  .s4{background:var(--amber);}.s5{background:var(--violet);}
+  header{text-align:center;padding:16px 0 8px;}
+  .eyebrow{font-size:12px;letter-spacing:.22em;color:var(--blue);font-weight:700;text-transform:uppercase;}
+  .wordmark{font-size:clamp(30px,9vw,46px);font-weight:800;letter-spacing:.02em;margin:6px 0 0;line-height:.95;}
+  .wordmark span{display:inline-block;}
+  .murder{font-size:clamp(20px,6.2vw,30px);font-weight:800;font-style:italic;color:var(--coral);
+    transform:rotate(-2deg);margin-top:2px;}
+  .lede{color:var(--muted);font-size:14.5px;margin:12px auto 0;max-width:460px;}
+  h2{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);
+    margin:22px 0 10px;font-weight:800;display:flex;align-items:center;gap:8px;}
+  h2::before{content:"";width:14px;height:14px;border-radius:3px;background:var(--violet);}
+  label{display:block;font-size:13px;font-weight:700;margin-bottom:6px;}
+  input[type=text],select{width:100%;padding:13px 14px;font-size:16px;border:1.5px solid var(--line);
+    border-radius:12px;outline:none;font-family:inherit;color:#69439A;background:#fff;}
+  input[type=text]:focus,select:focus{border-color:var(--blue);}
+  .field{margin:0 0 14px;}
+  select{appearance:none;-webkit-appearance:none;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2369439A' stroke-width='2.5'><path d='M6 9l6 6 6-6'/></svg>");
+    background-repeat:no-repeat;background-position:right 14px center;padding-right:40px;}
+  select:disabled{opacity:.6;}
+  /* intro reveal */
+  .intro{margin:14px 0 0;border:1.5px solid var(--line);border-left:5px solid var(--violet);
+    border-radius:12px;padding:14px 16px;background:var(--panel);display:none;}
+  .intro.show{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+  .intro .cname{font-size:17px;font-weight:800;color:var(--violet);}
+  .intro .cdesc{font-size:14px;color:#3f3550;margin-top:7px;line-height:1.5;}
+  .btn{display:block;width:100%;margin-top:20px;padding:16px;border:none;border-radius:14px;
+    background:var(--coral);color:#fff;font-size:16.5px;font-weight:800;cursor:pointer;font-family:inherit;}
+  .btn:active{filter:brightness(.94);}
+  .btn[disabled]{background:#c9ced6;cursor:not-allowed;}
+  .btn.secondary{background:var(--violet);}
+  .note{text-align:center;font-size:12.5px;color:var(--muted);margin-top:10px;}
+  .saved{text-align:center;font-size:14.5px;font-weight:700;margin-top:14px;min-height:20px;color:var(--green);}
+  .done{display:none;text-align:center;background:var(--panel);border-radius:14px;padding:22px 18px;margin-top:6px;}
+  .done.show{display:block;}
+  .done .big{font-size:20px;font-weight:800;color:var(--violet);}
+  .done .sub{font-size:14px;color:var(--muted);margin:8px 0 16px;}
+  .warn{font-size:12.5px;color:var(--coral);text-align:center;margin-top:8px;min-height:16px;}
+</style>
+</head>
+<body>
+<div class="stripe"><span class="s1"></span><span class="s2"></span><span class="s3"></span><span class="s4"></span><span class="s5"></span></div>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">YNG Hyderabad · Choose Your Mask</div>
+    <div class="wordmark" id="wm"></div>
+    <div class="murder">Murder</div>
+    <p class="lede">The date is set — now claim your character for the night. Each mask belongs to one guest only, so once you confirm, it's yours and locked in.</p>
+  </header>
+
+  <section id="formView">
+    <h2>Your details</h2>
+    <div class="field">
+      <label for="name">Your name</label>
+      <input type="text" id="name" placeholder="Your full name" autocomplete="name">
+    </div>
+    <div class="field">
+      <label for="contact">Contact (phone or email)</label>
+      <input type="text" id="contact" placeholder="So the host can reach you" autocomplete="email">
+    </div>
+
+    <h2>Pick your character</h2>
+    <div class="field">
+      <select id="charSelect">
+        <option value="">Choose a character…</option>
+      </select>
+    </div>
+
+    <div class="intro" id="intro">
+      <div class="cname" id="introName"></div>
+      <div class="cdesc" id="introDesc"></div>
+    </div>
+
+    <button class="btn" id="confirm" disabled>Confirm my character</button>
+    <div class="warn" id="warn"></div>
+    <p class="note" id="modeNote">One mask per guest. Your choice is final once you confirm.</p>
+    <div class="saved" id="saved"></div>
+  </section>
+
+  <section class="done" id="done">
+    <div class="big" id="doneBig"></div>
+    <div class="sub">Your character guide is downloading. Read it in secret — don't reveal your role!</div>
+    <button class="btn secondary" id="dlBtn">Download my character guide</button>
+  </section>
+</div>
+
+<a id="hiddenDl" style="display:none"></a>
+<script>
+// ====== CONFIG ======
+const CONFIG = {
+  FORM_ACTION: "https://docs.google.com/forms/d/e/1FAIpQLSfeh2JOvzswATLmCdwUeF2myJXlu91Sv5wcreQgbsmXwRo78Q/formResponse",
+  ENTRY_NAME:    "entry.90531258",
+  ENTRY_CONTACT: "entry.2002307644",
+  ENTRY_CHAR:    "entry.1124421743",
+  PDF_BASE: "pdfs/",        // folder (relative) holding the character PDFs
+  CSV_URL: ""               // published CSV of the responses' character column -> enables hide-taken
+};
+const CHARACTERS = [
+  {
+    "name": "The Black Swan",
+    "desc": "No one really knows much about where they came from. They just arrived one day. They’re apparently from a good family but no one is left, and their fortune was swept away, so they have no rank or title. However, they’re very charming and friendly, they’re charismatic and have all the qualities of the aristocracy; their heirs and graces and they’re very popular at the parties. They have no scandals, and their reputation is immaculate. They’ve worked hard to keep their pristine reputation so when they finally secure a wealthy partner, there’s nothing to hold against them, however money is what drives them, they don’t care who they marry as long as they’re rich.",
+    "pdf": "The_Black_Swan_web.pdf"
+  },
+  {
+    "name": "The Bluebird",
+    "desc": "Female, The General’s daughter and middle child. She’s been raised to care only about improving her family’s social standing. She enjoys turning her “pets” – women from lesser-known families – into social queens, as long as they don’t ever outshine her. She’s beautiful and quite an eligible young woman but has yet to settle down with anyone. People think it’s because she’s proud and too picky, but actually, she’s just more cautious. She fell for a man once who nearly ruined her and her family’s reputation, so now her guard is always up.",
+    "pdf": "The_Bluebird_web.pdf"
+  },
+  {
+    "name": "The Cat",
+    "desc": "Female, recently widowed, she was the 2nd wife of a reasonably wealthy gentleman who unfortunately had a son from a previous marriage who inherited the family estate and most of the fortune – leaving her and her children with no home and a seriously reduced income. They’ve temporarily moved in with her older sibling who married quite well and has quite a good living and a large estate; however, she doesn’t want to live on their charity and so is desperate to marry her children off to wealthy people and make sure they’re settled.",
+    "pdf": "The_Cat_web.pdf"
+  },
+  {
+    "name": "The Countess",
+    "desc": "Female, Party host. Every year, she hosts a masquerade ball for all her rich society friends. She’s a wealthy widow; her husband was the Governor of Venice for 20 years until his death last year. She’s the social queen with the power to make or break your reputation. She has a say on everything including what’s fashionable to wear, what foods to serve guests and who you should marry. No one in Venice can do anything without her permission and social ruin usually awaits anyone who challenges her authority.",
+    "pdf": "The_Countess_web.pdf"
+  },
+  {
+    "name": "The Dog",
+    "desc": "Took a job in Venice working odd jobs for the aristocracy. They’re polite, respectable, charming and reasonably good looking and because they’re a poor person but have the grace of the gentry, they’re accepted by the gentry but also ignored by them. No one pays any attention to them and they know lots of juicy gossip and secrets. Masquerade balls are a great opportunity for them to disguise themselves and mingle with the rich folk. They want to find information about their father who they know lives in Venice and is often at these parties.",
+    "pdf": "The_Dog_web.pdf"
+  },
+  {
+    "name": "The Dove",
+    "desc": "Female, The Dragon’s young sister, she’s only 18 and has quite a fortune of her own that was left to her by her mother. She’s only recently started appearing in society and is still very naïve about the ways of the world. She’s sweet and friendly, well-mannered and pretty and is the target for many young men. However, her brother is very protective of her; it’s difficult for anyone to get close to her and he scares off any potential suitors that he feels aren’t good enough.",
+    "pdf": "The_Dove_web.pdf"
+  },
+  {
+    "name": "The Dragon",
+    "desc": "Male. The most eligible bachelor in Venice. He’s the nephew of The Countess (on his mother’s side) and has a substantial fortune and a large estate in the Italian Country as well as a home in Venice. He’s very good looking, but very proud and very judgmental. There are very few women he would consider worthy of his time and his attitude. He has put a lot of people off; only the most desperate Socialites still bother with him, but he hates desperate women just as much as he hates poor women.",
+    "pdf": "The_Dragon_web.pdf"
+  },
+  {
+    "name": "The Fox",
+    "desc": "Male, A young man from a respectable family, but not gentry. He grew up as a farmer’s son; his family had very little money of their own and he worked really hard and eventually made his fortune. He owns multiple ships and shops and even a small estate. He’s now equally as wealthy as many young men here, but is still not regarded an equal because he earned his money, and didn’t inherit it.",
+    "pdf": "The_Fox_web.pdf"
+  },
+  {
+    "name": "The Hare",
+    "desc": "A sensible and respectable person of good family and good fortune. They’re looking after their sister and her family who have recently lost their fortune. They’re friendly, talkative and love a good party; they’re jolly and drink quite a bit. Their parties are often lavish as they’re constantly in competition with The General’s family. They believe that everyone deserves a chance at a good life, do a lot of work for charity and for the poor. This created tension and skirmishes have often happened between the rival families.",
+    "pdf": "The_Hare_web.pdf"
+  },
+  {
+    "name": "The Lion",
+    "desc": "Male, one of the most powerful men in Venice and a good friend of The Countess’ late husband, assisting him while he was Governor. Now retired, his primary goal is to make sure the class system stays in place and the rich and the poor do not mix. He’s the chief campaigner against the lower classes attending the Masquerade balls, keeping them exclusive to the rich and influential. He believes that the circumstances of one’s birth are the only things that matters. He’s in deep competition with The Hare’s family and there’s a lot of rivalry going on there that has resulted in a few skirmishes in the past.",
+    "pdf": "The_Lion_web.pdf"
+  },
+  {
+    "name": "The Mouse",
+    "desc": "The only child of The General’s brother. The Mouse’s father went against his family’s wishes and married a poor woman of no title and no fortune. In his anger, his father cut him off. The Mouse’s father wasted the family wealth and lost it all to gambling; was killed in a duel by a disgruntled nobleman. Their mother died shortly after their father and having no other relations left, they approached The General, their uncle, for his mercy and support. The General decided to take them under their wing, give them a proper education and hoped they could make a life for themselves. They’re under very strict instructions and are terrified of doing anything wrong in case they’re abandoned and so keep very quiet, do everything they’re told in order to keep in The General’s good graces.",
+    "pdf": "The_Mouse_web.pdf"
+  },
+  {
+    "name": "The Phoenix",
+    "desc": "Female, the daughter of a merchant. Her family are respectable and comfortable, but they are not titled or wealthy. She was in love with The Colonel, the two of them were engaged and had a secret wedding, hoping to make it official and legal but his father had other plans. He sent her away and paid her enough money to keep her silent and not reach out to The Colonel. What she didn’t realize at the time was she was pregnant with his child. Now, The Colonel is no longer restricted by his father’s rules; she’s come back to Venice looking for him.",
+    "pdf": "The_Phoenix_web.pdf"
+  },
+  {
+    "name": "The Shark",
+    "desc": "Male, the youngest of The General’s three children. Unlike his older siblings, he doesn’t care so much about society and fortune. As the youngest son, he’s not set to inherit and would much prefer a quiet life. He wanted to be a clergyman, but that wasn’t distinguished enough for his father, so he went into law instead. His family pays for his education and he’s expected to marry well to maintain the family honour and social standing, but he dislikes the corruption of the Venetian court and tries to avoid it.",
+    "pdf": "The_Shark_web.pdf"
+  },
+  {
+    "name": "The Sparrow",
+    "desc": "Female, the Countess’ distant relation, the stepdaughter of her brother through their marriage to a 2nd spouse or something, no one quite knows. When her parents fell on hard times and were unable to take care of her, she was taken in by the Countess. She’s mostly there as a companion; she reads to her, runs errands, goes visiting; everything the Countess wants her to do or should be doing herself ,but doesn’t want to is fobbed off on her. She’s quiet and plain and at 28, she’s nearly a spinster. There’s very little hope she will marry well and, at this point, she’ll happily take anyone that offers but no one has.",
+    "pdf": "The_Sparrow_web.pdf"
+  },
+  {
+    "name": "The Stag",
+    "desc": "Male, quite a wealthy man, owns a small estate on the Italian countryside. He’s not aristocracy, but worked under The General and became good friends with him during the wars. He’s polite and everybody likes him, but he’s quiet and reclusive. He was quite handsome in his younger days. Even now in his 40s, he’s still considered a handsome man, but no one seems to get his attention. He was in love many years ago with a woman, but she had no rank or fortune and his father forbid the marriage and sent her away. He tried to find her when he was no longer under his father’s control, but was unable to locate her.",
+    "pdf": "The_Stag_web.pdf"
+  },
+  {
+    "name": "The Stallion",
+    "desc": "Male, The General’s eldest son and heir. He will inherit everything upon his father’s death. He’s quite wild, enjoys partying and drinking, and spends a lot of time gambling. He is known through most of Venice as a bit of a womanizer. He’s charming, charismatic and can seduce anyone from nuns to duchesses... He’s only managed to escape jail due to his father’s influence and having someone else to blame.",
+    "pdf": "The_Stallion_web.pdf"
+  },
+  {
+    "name": "The Turtle",
+    "desc": "Unlike their relatives, they are quiet and reserved, they don’t really like attending wild parties and would much rather marry someone from a small town and settle somewhere quiet. They are constantly trying to curb their parents wild and drunk antics and get them to show a little moderation and are getting quite frustrated with it.",
+    "pdf": "The_Turtle_web.pdf"
+  },
+  {
+    "name": "The Unicorn",
+    "desc": "Female, The eldest daughter of The Widow and the only one out in society. She’s 18 years old and quite pretty, but she’s quite independent and free spirited, she loves poetry, art, music and will spend hours outside running through woodland and picking flowers. She’s often frowned upon for her more wild and ladylike behaviour; she doesn’t act proper and hates the stifling restrictions society puts on her.",
+    "pdf": "The_Unicorn_web.pdf"
+  },
+  {
+    "name": "The Weasel",
+    "desc": "Male, claims to be a man of God but he’s not a good man, he’s very proud and arrogant. He desperately seeks approval from those in power and sucks up to them while talking down to everyone else. He’s greedy and wants to live comfortably and freely. His main goal now is to marry a wealthy woman who will then elevate his position within society. He’s a greasy weasel and a kiss ass to people like The Countess, but incredibly condescending and disrespectful to people further down the social ladder.",
+    "pdf": "The_Weasel_web.pdf"
+  },
+  {
+    "name": "The Wolf",
+    "desc": "Male, a handsome young man with no fortune, he’s a soldier in the Italian army, he’s very charming and flirty. He’s eloquent and can make anyone fall in love with him but he’s full of lies and deceit. He will often manipulate a situation to fit his own narrative and because he’s good at making himself appeal to all people, it seems quite likely that he will eventually win the heart of someone wealthy. He’s driven by money and a need for power.",
+    "pdf": "The_Wolf_web.pdf"
+  }
+];
+const PALETTE = ["#1D80C3","#73BA40","#F05564","#E1A427","#69439A"];
+
+// multicolor wordmark
+(function(){
+  const wm=document.getElementById('wm');
+  "MASQUERADE".split("").forEach((ch,i)=>{const s=document.createElement('span');s.textContent=ch;s.style.color=PALETTE[i%PALETTE.length];wm.appendChild(s);});
+})();
+
+const sel=document.getElementById('charSelect');
+const nameEl=document.getElementById('name');
+const contactEl=document.getElementById('contact');
+const confirmBtn=document.getElementById('confirm');
+const intro=document.getElementById('intro');
+const introName=document.getElementById('introName');
+const introDesc=document.getElementById('introDesc');
+const saved=document.getElementById('saved');
+const warn=document.getElementById('warn');
+const byName={};
+CHARACTERS.forEach(c=>byName[c.name]=c);
+
+// build dropdown
+function buildOptions(taken){
+  taken=taken||{};
+  sel.querySelectorAll('option:not([value=""])').forEach(o=>o.remove());
+  CHARACTERS.forEach(c=>{
+    const o=document.createElement('option');
+    o.value=c.name;
+    if(taken[c.name]){o.textContent=c.name+" — taken";o.disabled=true;}
+    else{o.textContent=c.name;}
+    sel.appendChild(o);
+  });
+}
+buildOptions();
+
+sel.addEventListener('change',()=>{
+  const c=byName[sel.value];
+  if(c){introName.textContent=c.name;introDesc.textContent=c.desc;intro.classList.add('show');}
+  else{intro.classList.remove('show');}
+  checkReady();
+});
+function checkReady(){confirmBtn.disabled=!(nameEl.value.trim()&&contactEl.value.trim()&&sel.value);}
+nameEl.addEventListener('input',checkReady);
+contactEl.addEventListener('input',checkReady);
+
+// ---- hide-taken (best effort) ----
+async function loadTaken(){
+  if(!CONFIG.CSV_URL) return {};
+  try{
+    const r=await fetch(CONFIG.CSV_URL,{cache:"no-store"});
+    const text=await r.text();
+    const taken={};
+    text.split(/\r?\n/).forEach(line=>{
+      // match any known character name appearing in the row
+      CHARACTERS.forEach(c=>{ if(line.indexOf(c.name)!==-1) taken[c.name]=true; });
+    });
+    return taken;
+  }catch(e){return {};}
+}
+(async()=>{
+  const taken=await loadTaken();
+  if(Object.keys(taken).length){
+    const cur=sel.value;
+    buildOptions(taken);
+    if(taken[cur]){ sel.value=""; intro.classList.remove('show'); }
+    else { sel.value=cur; }
+    checkReady();
+  }
+})();
+
+function pdfUrl(c){return CONFIG.PDF_BASE+encodeURIComponent(c.pdf);}
+function triggerDownload(c){
+  const a=document.getElementById('hiddenDl');
+  a.href=pdfUrl(c); a.download=c.pdf; a.click();
+}
+
+confirmBtn.addEventListener('click',async()=>{
+  const name=nameEl.value.trim(), contact=contactEl.value.trim(), character=sel.value;
+  if(!name||!contact||!character) return;
+  const c=byName[character];
+  if(!confirm("Confirm "+character+"? Your character is final once you submit.")) return;
+  confirmBtn.disabled=true; saved.textContent="Locking it in…"; warn.textContent="";
+
+  // last-second taken re-check
+  const taken=await loadTaken();
+  if(taken[character]){
+    warn.textContent="Sorry — "+character+" was just claimed by someone else. Please pick another.";
+    saved.textContent=""; buildOptions(taken); sel.value=""; intro.classList.remove('show');
+    confirmBtn.disabled=false; checkReady(); return;
+  }
+
+  try{
+    const body=new URLSearchParams();
+    body.append(CONFIG.ENTRY_NAME,name);
+    body.append(CONFIG.ENTRY_CONTACT,contact);
+    body.append(CONFIG.ENTRY_CHAR,character);
+    await fetch(CONFIG.FORM_ACTION,{method:"POST",mode:"no-cors",
+      headers:{"Content-Type":"application/x-www-form-urlencoded"},body});
+    // success UI
+    document.getElementById('formView').style.display='none';
+    const done=document.getElementById('done');
+    document.getElementById('doneBig').textContent="You are "+character+".";
+    done.classList.add('show');
+    document.getElementById('dlBtn').onclick=()=>triggerDownload(c);
+    setTimeout(()=>triggerDownload(c),400);
+  }catch(e){
+    saved.textContent=""; warn.textContent="Couldn't reach the form. Check your connection and try again.";
+    confirmBtn.disabled=false;
+  }
+});
+</script>
+</body>
+</html>
